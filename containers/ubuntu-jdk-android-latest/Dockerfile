@@ -4,7 +4,9 @@
 
 # Base image
 # ---------------------------------------------------------------------- #
-FROM ubuntu:22.04
+FROM ubuntu:latest
+
+ARG USER=runner
 
 # support multiarch: i386 architecture
 # install Java
@@ -13,10 +15,25 @@ ARG JDK_VERSION=17
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get dist-upgrade -y && \
+    apt-get install -y --no-install-recommends build-essential git neovim wget unzip sudo && \
     apt-get install -y --no-install-recommends libncurses5:i386 libc6:i386 libstdc++6:i386 lib32gcc-s1 lib32ncurses6 lib32z1 zlib1g:i386 && \
+    apt-get install -y --no-install-recommends qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils && \
     apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
-    apt-get install -y --no-install-recommends sudo git udev wget unzip && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get -yq autoremove && \
+    apt-get clean && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN groupadd -g 1000 -r $USER
+RUN useradd -u 1000 -g 1000 --create-home -r $USER
+RUN adduser $USER libvirt
+RUN adduser $USER kvm
+#Change password
+RUN echo "$USER:$USER" | chpasswd
+#Make sudo passwordless
+RUN echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER
+RUN usermod -aG sudo $USER
+RUN usermod -aG plugdev $USER
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
@@ -63,4 +80,7 @@ ENV QTWEBENGINE_DISABLE_SANDBOX 1
 RUN yes | sdkmanager --licenses
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
-RUN sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
+RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
+
+# Expose adb
+EXPOSE 5037 5554 5555 5900
