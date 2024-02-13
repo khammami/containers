@@ -22,15 +22,20 @@ RUN dpkg --add-architecture i386 && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ARG USER=runner
-RUN groupadd -g 1000 -r $USER && \
-    useradd -u 1000 -g 1000 --create-home -r $USER && \
-    adduser $USER libvirt && \
-    adduser $USER kvm && \
-    echo "$USER:$USER" | chpasswd && \
-    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER && \
-    usermod -aG sudo $USER && \
-    usermod -aG plugdev $USER
+#ARG USER=runner
+# RUN groupadd -g 1000 -r $USER && \
+#     useradd -u 1000 -g 1000 --create-home -r $USER && \
+#     adduser $USER libvirt && \
+#     adduser $USER kvm && \
+#     echo "$USER:$USER" | chpasswd && \
+#     echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER && \
+#     usermod -aG sudo $USER && \
+#     usermod -aG plugdev $USER
+
+ENV HOME /home/runner
+WORKDIR ${HOME}
+
+ENV ANDROID_AVD_HOME=$HOME/.android/avd
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
@@ -78,11 +83,6 @@ RUN yes | sdkmanager --licenses
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
 RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
-
-ENV HOME /home/${USER}
-WORKDIR ${HOME}
-
-ENV ANDROID_AVD_HOME=$HOME/.android/avd
 
 # Optional: Mount emulator storage for persistence
 VOLUME [ "$ANDROID_AVD_HOME" ]
