@@ -14,7 +14,7 @@ RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends build-essential git wget unzip sudo && \
-    apt-get install -y --no-install-recommends libncurses5:i386 libc6:i386 libstdc++6:i386 lib32gcc-s1 lib32ncurses6 lib32z1 zlib1g:i386 && \
+    apt-get install -y --no-install-recommends libncurses5:i386 libx11-6:i386 libc6:i386 libstdc++6:i386 lib32gcc-s1 lib32ncurses6 lib32z1 zlib1g:i386 && \
     apt-get install -y --no-install-recommends qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils && \
     apt-get -yq autoremove && \
     apt-get clean && \
