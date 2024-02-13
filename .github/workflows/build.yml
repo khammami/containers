@@ -1,0 +1,28 @@
+name: Build & publish Docker image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: "read"
+  packages: "write"
+
+jobs:
+  build-publish-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push container image to GitHub registry
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ghcr.io/ubnutu-jdk17-android34:latest
+          file: containers/ubuntu-jdk-android-latest/Dockerfile
