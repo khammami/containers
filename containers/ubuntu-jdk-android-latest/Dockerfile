@@ -6,8 +6,6 @@
 # ---------------------------------------------------------------------- #
 FROM ubuntu:latest
 
-ARG USER=runner
-
 # support multiarch: i386 architecture
 # install Java
 # install essential tools
@@ -23,7 +21,8 @@ RUN dpkg --add-architecture i386 && \
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+    
+ARG USER=runner
 RUN groupadd -g 1000 -r $USER && \
     useradd -u 1000 -g 1000 --create-home -r $USER && \
     adduser $USER libvirt && \
@@ -32,6 +31,8 @@ RUN groupadd -g 1000 -r $USER && \
     echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER && \
     usermod -aG sudo $USER && \
     usermod -aG plugdev $USER
+
+USER ${USER}
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
