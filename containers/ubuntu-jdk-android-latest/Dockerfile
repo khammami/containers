@@ -32,12 +32,11 @@ RUN dpkg --add-architecture i386 && \
 #     usermod -aG sudo $USER && \
 #     usermod -aG plugdev $USER
 
-ENV HOME /home/runner
-WORKDIR ${HOME}
+# ENV HOME /home/runner
+# WORKDIR ${HOME}
 
-ENV ANDROID_AVD_HOME=$HOME/.android/avd
-# Optional: Mount emulator storage for persistence
-VOLUME [ "$ANDROID_AVD_HOME" ]
+# ENV ANDROID_AVD_HOME=$HOME/.android/avd
+
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
@@ -83,6 +82,8 @@ RUN yes | sdkmanager --licenses
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
 RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
+
+VOLUME [ "$ANDROID_AVD_HOME" ]
 
 # Expose adb
 EXPOSE 5037 5554 5555 5900
