@@ -61,7 +61,7 @@ RUN cd /opt && \
 ARG ANDROID_SDK_VERSION=11076708
 ENV ANDROID_ROOT /usr/local/lib/android 
 ENV ANDROID_SDK_ROOT=${ANDROID_ROOT}/sdk
-ENV ANDROID_HOME ${ANDROID_SDK_ROOT}/
+ENV ANDROID_HOME ${ANDROID_SDK_ROOT}
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
