@@ -93,11 +93,8 @@ RUN yes | sdkmanager --install ${TEST_IMG_PCKG}
 ARG AVD_NAME="test"
 RUN echo no | avdmanager create avd --force -n "${AVD_NAME}" --abi 'google_apis/x86' --package ${TEST_IMG_PCKG}
 
-RUN emulator -avd "$AVD_NAME" -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
-# Wait for boot completion and press home button
-RUN adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82' && \
-    echo "Emulator '$AVD_NAME' booted!"
-
+COPY start-emulator.sh /usr/bin
+RUN chmod +x /usr/bin/start-emulator.sh
 
 # Expose adb
 EXPOSE 5037 5554 5555 5900
