@@ -23,14 +23,14 @@ RUN dpkg --add-architecture i386 && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG USER=runner
-RUN groupadd -g 1000 -r $USER && \
-    useradd -u 1000 -g 1000 --create-home -r $USER && \
-    adduser $USER libvirt && \
-    adduser $USER kvm && \
-    echo "$USER:$USER" | chpasswd && \
-    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER && \
-    usermod -aG sudo $USER && \
-    usermod -aG plugdev $USER
+RUN groupadd -g root -r ${USER} && \
+    useradd -rm -d /home/${USER} -u 1000 -g root -s /bin/bash ${USER} && \
+    adduser ${USER} libvirt && \
+    adduser ${USER} kvm && \
+    echo "${USER}:${USER}" | chpasswd && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-${USER} && \
+    usermod -aG sudo ${USER} && \
+    usermod -aG plugdev ${USER}
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
