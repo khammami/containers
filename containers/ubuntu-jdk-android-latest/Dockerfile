@@ -24,16 +24,14 @@ RUN dpkg --add-architecture i386 && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN groupadd -g 1000 -r $USER
-RUN useradd -u 1000 -g 1000 --create-home -r $USER
-RUN adduser $USER libvirt
-RUN adduser $USER kvm
-#Change password
-RUN echo "$USER:$USER" | chpasswd
-#Make sudo passwordless
-RUN echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER
-RUN usermod -aG sudo $USER
-RUN usermod -aG plugdev $USER
+RUN groupadd -g 1000 -r $USER && \
+    useradd -u 1000 -g 1000 --create-home -r $USER && \
+    adduser $USER libvirt && \
+    adduser $USER kvm && \
+    echo "$USER:$USER" | chpasswd && \
+    echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER && \
+    usermod -aG sudo $USER && \
+    usermod -aG plugdev $USER
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
