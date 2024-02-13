@@ -21,7 +21,7 @@ RUN dpkg --add-architecture i386 && \
     apt-get clean && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-    
+
 ARG USER=runner
 RUN groupadd -g 1000 -r $USER && \
     useradd -u 1000 -g 1000 --create-home -r $USER && \
@@ -31,8 +31,6 @@ RUN groupadd -g 1000 -r $USER && \
     echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-$USER && \
     usermod -aG sudo $USER && \
     usermod -aG plugdev $USER
-
-USER ${USER}
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
@@ -59,7 +57,6 @@ ARG ANDROID_SDK_VERSION=11076708
 ENV ANDROID_ROOT /usr/local/lib/android 
 ENV ANDROID_SDK_ROOT=${ANDROID_ROOT}/sdk
 ENV ANDROID_HOME ${ANDROID_SDK_ROOT}/
-ENV ANDROID_AVD_HOME=$HOME/.android/avd
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
@@ -81,6 +78,11 @@ RUN yes | sdkmanager --licenses
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
 RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
+
+USER ${USER}
+WORKDIR /home/${USER}
+
+ENV ANDROID_AVD_HOME=$HOME/.android/avd
 
 # Optional: Mount emulator storage for persistence
 VOLUME [ "$ANDROID_AVD_HOME" ]
