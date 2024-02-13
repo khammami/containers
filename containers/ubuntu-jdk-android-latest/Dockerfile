@@ -36,6 +36,8 @@ ENV HOME /home/runner
 WORKDIR ${HOME}
 
 ENV ANDROID_AVD_HOME=$HOME/.android/avd
+# Optional: Mount emulator storage for persistence
+VOLUME [ "$ANDROID_AVD_HOME" ]
 
 # download and install Gradle
 # https://services.gradle.org/distributions/
@@ -59,9 +61,7 @@ RUN cd /opt && \
 # https://developer.android.com/studio#command-line-tools-only
 # Set env variable for SDK Root (https://developer.android.com/studio/command-line/variables)
 ARG ANDROID_SDK_VERSION=11076708
-ENV ANDROID_ROOT /usr/local/lib/android 
-ENV ANDROID_SDK_ROOT=${ANDROID_ROOT}/sdk
-ENV ANDROID_HOME ${ANDROID_SDK_ROOT}
+ENV ANDROID_HOME /usr/local/lib/android/sdk 
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
@@ -83,9 +83,6 @@ RUN yes | sdkmanager --licenses
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
 RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
-
-# Optional: Mount emulator storage for persistence
-VOLUME [ "$ANDROID_AVD_HOME" ]
 
 # Expose adb
 EXPOSE 5037 5554 5555 5900
