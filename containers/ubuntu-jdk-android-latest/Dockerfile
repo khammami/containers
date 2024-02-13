@@ -83,7 +83,5 @@ RUN yes | sdkmanager --licenses
 ARG BUILD_TOOLS_VERSION="34.0.0"
 RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
 
-# VOLUME [ "$ANDROID_AVD_HOME" ]
-
 # Expose adb
 EXPOSE 5037 5554 5555 5900
