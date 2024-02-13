@@ -93,7 +93,7 @@ RUN yes | sdkmanager --install ${TEST_IMG_PCKG}
 ARG AVD_NAME="test"
 RUN echo no | avdmanager create avd --force -n "${AVD_NAME}" --abi 'google_apis/x86' --package ${TEST_IMG_PCKG}
 
-COPY start-emulator.sh /usr/bin
+COPY containers/ubuntu-jdk-android-latest/start-emulator.sh /usr/bin
 RUN chmod +x /usr/bin/start-emulator.sh
 
 # Expose adb
