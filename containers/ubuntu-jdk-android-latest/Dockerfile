@@ -61,6 +61,7 @@ RUN cd /opt && \
 # Set env variable for SDK Root (https://developer.android.com/studio/command-line/variables)
 ARG ANDROID_SDK_VERSION=11076708
 ENV ANDROID_HOME /usr/local/lib/android/sdk 
+ENV ANDROID_AVD_HOME $HOME/.android/avd
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
@@ -82,6 +83,8 @@ RUN yes | sdkmanager --licenses
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
 RUN yes | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator"
+
+VOLUME [ "$ANDROID_AVD_HOME" ]
 
 # Expose adb
 EXPOSE 5037 5554 5555 5900
