@@ -4,18 +4,19 @@
 
 # Base image
 # ---------------------------------------------------------------------- #
-FROM eclipse-temurin:17
+FROM ubuntu:latest
 
 # # support multiarch: i386 architecture
 # # install Java
 # # install essential tools
-# ARG JDK_VERSION=17
+ARG JDK_VERSION=17
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends build-essential git wget unzip sudo && \
-    apt-get install -y --no-install-recommends libncurses5:i386 libx11-6:i386 libc6:i386 libstdc++6:i386 lib32gcc-s1 lib32ncurses6 lib32z1 zlib1g:i386 && \
+    apt-get install -y --no-install-recommends libncurses5:i386 libc6:i386 libstdc++6:i386 lib32gcc-s1 lib32ncurses6 lib32z1 zlib1g:i386 && \
     apt-get install -y --no-install-recommends qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils && \
+    apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk && \
     apt-get -yq autoremove && \
     apt-get clean && \
     apt-get autoclean && \
@@ -71,7 +72,7 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     rm *tools*linux*.zip
 
 # set the environment variables
-# ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
 # ENV GRADLE_HOME /opt/gradle
 # ENV KOTLIN_HOME /opt/kotlinc
 ENV PATH ${PATH}:${GRADLE_HOME}/bin:${KOTLIN_HOME}/bin:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator
