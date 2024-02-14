@@ -132,7 +132,8 @@ ENV QTWEBENGINE_DISABLE_SANDBOX 1
 
 ENV SCRIPT_PATH="dce-scripts"
 RUN mkdir -p ${SCRIPT_PATH}
-COPY start.sh ${SCRIPT_PATH}/
+
+COPY start.sh ${SCRIPT_PATH}
 RUN chown -R 1300:1301 ${SCRIPT_PATH} && \
     chmod +x ${SCRIPT_PATH}/start.sh
 

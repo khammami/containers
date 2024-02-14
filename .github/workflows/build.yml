@@ -20,9 +20,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push container image to GitHub registry
+      # Build & push docker to GitHub registry
+      - name: Build and push container for ubuntu-jdk-android-latest
         uses: docker/build-push-action@v5
         with:
           push: true
+          context: ./containers/ubuntu-jdk-android-latest
           tags: ghcr.io/${{ github.actor }}/containers/ubnutu-jdk17-android34:latest
-          file: containers/ubuntu-jdk-android-latest/Dockerfile
