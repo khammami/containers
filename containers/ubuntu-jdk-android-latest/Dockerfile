@@ -38,22 +38,24 @@ ENV JAVA_HOME="/usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64" \
 #     usermod -aG sudo $USER && \
 #     usermod -aG plugdev $USER
 
-ARG USERNAME=androidrunner
-RUN groupadd ${USERNAME} \
-    --gid 1301 \
-    && useradd ${USERNAME} \
-    --uid 1300 \
-    --gid 1301 \
-    --create-home \
-    --shell /bin/bash \
-    && adduser ${USERNAME} libvirt \
-    && adduser ${USERNAME} kvm \
-    && usermod -aG sudo ${USERNAME} \
-    && usermod -aG plugdev ${USERNAME} \
-    && echo "${USERNAME}:${USERNAME}" | chpasswd \
-    && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/90-${USERNAME}
+# ARG USERNAME=androidrunner
+# RUN groupadd ${USERNAME} \
+#     --gid 1301 \
+#     && useradd ${USERNAME} \
+#     --uid 1300 \
+#     --gid 1301 \
+#     --create-home \
+#     --shell /bin/bash \
+#     && adduser ${USERNAME} libvirt \
+#     && adduser ${USERNAME} kvm \
+#     && usermod -aG sudo ${USERNAME} \
+#     && usermod -aG plugdev ${USERNAME} \
+#     && echo "${USERNAME}:${USERNAME}" | chpasswd \
+#     && echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/90-${USERNAME}
 
-WORKDIR /home/${USERNAME}
+# WORKDIR /home/${USERNAME}
+
+WORKDIR /
 
 # ENV HOME /home/runner
 # WORKDIR ${HOME}
@@ -90,9 +92,10 @@ RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
     mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/tools && \
-    chmod a+x -R ${ANDROID_HOME}/cmdline-tools && \
-    chown -R 1300:1301 ${ANDROID_HOME}/cmdline-tools && \
     rm *tools*linux*.zip
+
+    # chmod a+x -R ${ANDROID_HOME}/cmdline-tools && \
+    # chown -R 1300:1301 ${ANDROID_HOME}/cmdline-tools && \
 
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${ANDROID_HOME}/build-tools
 
@@ -101,8 +104,8 @@ RUN mkdir -p ~/.android && \
     touch ~/.android/repositories.cfg && \
     echo y | sdkmanager --licenses && \
     echo y | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator" && \
-    mv ~/.android .android && \
-    chown -R 1300:1301 .android
+    mv ~/.android .android
+    # chown -R 1300:1301 .android
 
 # set the environment variables
 #ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
@@ -134,10 +137,12 @@ ENV SCRIPT_PATH="dce-scripts"
 RUN mkdir -p ${SCRIPT_PATH}
 
 COPY start.sh ${SCRIPT_PATH}
-RUN chown -R 1300:1301 ${SCRIPT_PATH} && \
-    chmod +x ${SCRIPT_PATH}/start.sh
+# RUN chown -R 1300:1301 ${SCRIPT_PATH} && \
+#     chmod +x ${SCRIPT_PATH}/start.sh
 
-USER 1300:1301
+RUN chmod +x ${SCRIPT_PATH}/start.sh
+
+USER root
 
 # Expose adb
 EXPOSE 5037 5554 5555 5900
