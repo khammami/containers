@@ -63,7 +63,8 @@ WORKDIR $HOME
 # https://developer.android.com/studio#command-line-tools-only
 # Set env variable for SDK Root (https://developer.android.com/studio/command-line/variables)
 ARG ANDROID_SDK_VERSION=11076708
-ENV ANDROID_HOME /usr/local/lib/android/sdk 
+ENV ANDROID_HOME "/android-sdk"
+ENV ANDROID_SDK_ROOT "/android-sdk"
 ENV ANDROID_AVD_HOME $HOME/.android/avd
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
