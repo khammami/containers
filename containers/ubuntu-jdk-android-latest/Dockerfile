@@ -115,7 +115,7 @@ RUN mkdir -p ~/.android && \
 # ENV KOTLIN_HOME /opt/kotlinc
 # ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${ANDROID_HOME}/build-tools
 # WORKAROUND: for issue https://issuetracker.google.com/issues/37137213
-# ENV LD_LIBRARY_PATH ${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
+ENV LD_LIBRARY_PATH ${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
 # patch emulator issue: Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
 # https://doc.qt.io/qt-5/qtwebengine-platform-notes.html#sandboxing-support
 ENV QTWEBENGINE_DISABLE_SANDBOX 1
