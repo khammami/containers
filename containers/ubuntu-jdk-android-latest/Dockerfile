@@ -87,8 +87,8 @@ ENV JAVA_HOME="/usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64" \
 ARG ANDROID_SDK_VERSION=11076708
 ENV ANDROID_HOME "/opt/android"
 ENV ANDROID_SDK_ROOT "/opt/android"
-ENV ANDROID_EMULATOR_HOME "${HOME}/.android"
-ENV ANDROID_AVD_HOME "${HOME}/.android/avd"
+ENV ANDROID_EMULATOR_HOME "/root/.android"
+ENV ANDROID_AVD_HOME "/root/.android/avd"
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
