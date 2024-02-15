@@ -102,10 +102,14 @@ ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdlin
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
 ARG PLATFORM_VERSION="34"
+ARG IMG_API_LEVEL=29
+ARG TEST_IMG_PCKG="system-images;android-${IMG_API_LEVEL};google_apis;x86"
 RUN mkdir -p ~/.android && \
     touch ~/.android/repositories.cfg && \
     echo y | sdkmanager --licenses && \
-    echo y | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator" "platforms;android-${PLATFORM_VERSION}" && \
+    echo y | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" \
+    "platform-tools" "emulator" "platforms;android-${PLATFORM_VERSION}" \
+    ${TEST_IMG_PCKG} && \
     mv ~/.android .android
 # chown -R 1300:1301 .android
 
