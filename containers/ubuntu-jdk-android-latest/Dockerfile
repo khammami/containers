@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------------- #
 FROM ubuntu:latest
 
-# ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # # support multiarch: i386 architecture
 # # install Java
@@ -55,9 +55,9 @@ ENV JAVA_HOME="/usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64" \
 
 # WORKDIR /home/${USERNAME}
 
-WORKDIR /
+# WORKDIR /
 
-# ENV HOME /home/runner
+# ENV HOME /github/home
 # WORKDIR ${HOME}
 
 # ENV ANDROID_AVD_HOME=$HOME/.android/avd
@@ -87,25 +87,27 @@ WORKDIR /
 ARG ANDROID_SDK_VERSION=11076708
 ENV ANDROID_HOME "/opt/android"
 ENV ANDROID_SDK_ROOT "/opt/android"
-# ENV ANDROID_AVD_HOME $HOME/.android/avd
+ENV ANDROID_EMULATOR_HOME "${HOME}/.android"
+ENV ANDROID_AVD_HOME "${HOME}/.android/avd"
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
     unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
     mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/tools && \
     rm *tools*linux*.zip
 
-    # chmod a+x -R ${ANDROID_HOME}/cmdline-tools && \
-    # chown -R 1300:1301 ${ANDROID_HOME}/cmdline-tools && \
+# chmod a+x -R ${ANDROID_HOME}/cmdline-tools && \
+# chown -R 1300:1301 ${ANDROID_HOME}/cmdline-tools && \
 
 ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${ANDROID_HOME}/build-tools
 
 ARG BUILD_TOOLS_VERSION="34.0.0"
+ARG PLATFORM_VERSION="34"
 RUN mkdir -p ~/.android && \
     touch ~/.android/repositories.cfg && \
     echo y | sdkmanager --licenses && \
-    echo y | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator" && \
+    echo y | sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "emulator" "platforms;android-${PLATFORM_VERSION}" && \
     mv ~/.android .android
-    # chown -R 1300:1301 .android
+# chown -R 1300:1301 .android
 
 # set the environment variables
 #ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
@@ -113,7 +115,7 @@ RUN mkdir -p ~/.android && \
 # ENV KOTLIN_HOME /opt/kotlinc
 # ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${ANDROID_HOME}/build-tools
 # WORKAROUND: for issue https://issuetracker.google.com/issues/37137213
-ENV LD_LIBRARY_PATH ${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
+# ENV LD_LIBRARY_PATH ${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
 # patch emulator issue: Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
 # https://doc.qt.io/qt-5/qtwebengine-platform-notes.html#sandboxing-support
 ENV QTWEBENGINE_DISABLE_SANDBOX 1
