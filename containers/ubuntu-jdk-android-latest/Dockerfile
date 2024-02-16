@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG JDK_VERSION=17
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    build-essential git wget unzip sudo \
+    build-essential git wget unzip sudo gpg \
     qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils \
     openjdk-${JDK_VERSION}-jdk \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
